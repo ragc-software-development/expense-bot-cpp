@@ -1,0 +1,56 @@
+stages:
+  - build
+  - package
+  - deploy
+
+variables:
+  # Use the GitLab Container Registry
+  IMAGE_NAME: $CI_REGISTRY_IMAGE
+  IMAGE_TAG: $CI_COMMIT_SHORT_SHA
+
+# --- Stage 1 & 2: Build and Package ---
+# Use Docker-in-Docker (dind) to build the image defined in our Dockerfile
+build_and_package:
+  stage: build
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    # Build the production-ready multi-stage image
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+    # Also tag as 'latest' for the main branch
+    - if [ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]; then
+        docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:latest;
+        docker push $IMAGE_NAME:latest;
+      fi
+  only:
+    - main
+    - merge_requests
+
+# --- Stage 3: Deploy (Manual Trigger) ---
+# This stage connects to your VPS and updates the container.
+# Requires $SSH_PRIVATE_KEY and $SERVER_IP to be set in GitLab CI/CD Variables.
+deploy_to_vps:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan $SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - ssh root@$SERVER_IP "
+        cd /app/expense-bot &&
+        docker-compose -f docker-compose.prod.yml pull &&
+        docker-compose -f docker-compose.prod.yml up -d
+      "
+  environment:
+    name: production
+  when: manual
+  only:
+    - main

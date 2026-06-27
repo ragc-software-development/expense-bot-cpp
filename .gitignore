@@ -1,0 +1,15 @@
+# Ignore local environment secrets
+setup_env.sh
+.env
+.env.local
+
+# Ignore build and dependency directories
+build/
+vcpkg_installed/
+
+# Ignore CMake cache
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
