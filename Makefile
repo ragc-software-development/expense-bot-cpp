@@ -12,17 +12,23 @@ help: ## Show this help message
 build-base: ## [PROD] Build the heavy base image (vcpkg + dependencies)
 	docker build -f builder.Dockerfile -t expense-bot-builder:latest .
 
+debug-build-base: ## [PROD] Build base image with full verbose logs
+	docker build -f builder.Dockerfile -t expense-bot-builder:latest . --progress=plain
+
 deploy: ## [PROD] Deploy the production stack in the background
-	docker-compose -f $(PROD_COMPOSE) up -d --build
+	docker compose -f $(PROD_COMPOSE) up -d --build
 
-stop: ## [PROD] Stop the production stack
-	docker-compose -f $(PROD_COMPOSE) down
+down: ## [PROD] Stop and remove all production containers
+	docker compose -f $(PROD_COMPOSE) down
 
-logs: ## [PROD] Stream production bot logs
-	docker-compose -f $(PROD_COMPOSE) logs -f bot
+logs: ## [PROD] Stream production logs
+	docker compose -f $(PROD_COMPOSE) logs -f
+
+ps: ## [PROD] View status of production containers
+	docker compose -f $(PROD_COMPOSE) ps
 
 dev: ## [DEV] Start the development database only
-	docker-compose -f $(DEV_COMPOSE) up -d db
+	docker compose -f $(DEV_COMPOSE) up -d db
 
 build: ## [PROD] Only build the production Docker image
 	docker build -t expense-bot:latest .

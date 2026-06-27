@@ -21,6 +21,7 @@ set(SOURCES
     src/gemini_client.cpp
     src/processor.cpp
     src/replier.cpp
+    src/receiver.cpp
 )
 
 # Define your bot executable

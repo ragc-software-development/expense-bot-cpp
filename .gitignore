@@ -7,6 +7,10 @@ setup_env.sh
 build/
 vcpkg_installed/
 
+# Ignore IDEs
+.vscode/
+.idea/
+
 # Ignore CMake cache
 CMakeCache.txt
 CMakeFiles/

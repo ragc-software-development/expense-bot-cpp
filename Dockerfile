@@ -1,27 +1,36 @@
-# --- STAGE 1: Builder ---
-# In CI, we will build 'builder.Dockerfile' and tag it as 'expense-bot-builder'
-# Then we start FROM it here.
-ARG BUILDER_IMAGE=expense-bot-builder:latest
-FROM ${BUILDER_IMAGE} AS compiler
+# --- STAGE 1: Compiler ---
+FROM expense-bot-builder:latest AS compiler
 
 WORKDIR /app
+COPY vcpkg.json .
 COPY . .
 
-# Build the project (Fast! Dependencies are already in /opt/vcpkg)
-RUN cmake -B build \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_TOOLCHAIN_FILE=/opt/vcpkg/scripts/buildsystems/vcpkg.cmake
+# Build the application
+RUN cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/vcpkg/scripts/buildsystems/vcpkg.cmake
 RUN cmake --build build --config Release -j $(nproc)
 
 # --- STAGE 2: Runner ---
-FROM ubuntu:22.04 AS runner
+FROM ubuntu:24.04 AS runner
+
+# Install runtime dependencies (SSL and Postgres client)
 RUN apt-get update && apt-get install -y \
-    libssl3 libpq5 ca-certificates && rm -rf /var/lib/apt/lists/*
+    libssl3t64 libpq5 ca-certificates && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY --from=compiler /app/build/expense_bot .
 
-RUN useradd -m botuser
+# 1. Copy the executable
+COPY --from=compiler /app/build/expense-bot .
+
+# 2. Copy the shared libraries from vcpkg (the .so files)
+# This is what was missing!
+COPY --from=compiler /app/vcpkg_installed/x64-linux/lib/*.so* /usr/local/lib/
+
+# 3. Refresh the linker cache so the system finds the new libraries
+RUN ldconfig
+
+# 4. Create non-root user
+RUN useradd -m botuser && chown -R botuser:botuser /app
 USER botuser
 
-ENTRYPOINT ["./expense_bot"]
+# 5. Corrected Entrypoint
+ENTRYPOINT ["./expense-bot"]
