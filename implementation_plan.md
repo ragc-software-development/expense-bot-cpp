@@ -38,6 +38,6 @@ The goal is to convert informal strings (e.g., "Spent 50 bucks on sushi") into a
 - [x] JSON Parsing Logic.
 - [x] WorkerPool & Queue Logic.
 - [x] Production Docker Infrastructure.
-- [x] GitLab CI/CD Pipeline.
+- [x] GitLab & GitHub CI/CD Pipelines (targeting 'master').
 - [x] Local Deployment Management (Makefile).
 - [x] Replier Visual Cards (Rich Embeds).

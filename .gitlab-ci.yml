@@ -27,7 +27,7 @@ build_and_package:
         docker push $IMAGE_NAME:latest;
       fi
   only:
-    - main
+    - master
     - merge_requests
 
 # --- Stage 3: Deploy (Manual Trigger) ---
@@ -53,4 +53,4 @@ deploy_to_vps:
     name: production
   when: manual
   only:
-    - main
+    - master
