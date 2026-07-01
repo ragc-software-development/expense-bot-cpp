@@ -5,25 +5,27 @@
 #include "models/expense.hpp"
 #include <optional>
 
-namespace ragc {
+namespace ragc
+{
 
 /**
  * @brief Coordinates between the LLM parser and the Database persistence.
  */
-class Processor {
+class Processor
+{
 public:
     /**
      * @brief Construct a new Processor
-     * 
+     *
      * @param db Reference to the database processor (Dependency Injection).
      * @param ai Reference to the Gemini AI client (Dependency Injection).
      */
-    Processor(DatabaseProcessor& db, GeminiClient& ai);
+    Processor(DatabaseProcessor &db, GeminiClient &ai);
 
     /**
      * @brief orchestrates the end-to-end task: AI extraction -> DB persistence.
      * Uses persistent pending_requests for reliability.
-     * 
+     *
      * @param raw_content The text sent by the user in Discord.
      * @param user_id The Discord User ID.
      * @return std::optional<Expense> The processed expense if successful, nullopt otherwise.
@@ -36,8 +38,8 @@ public:
     void retry_background_tasks();
 
 private:
-    DatabaseProcessor& db_;
-    GeminiClient& ai_;
+    DatabaseProcessor &db_;
+    GeminiClient &ai_;
 };
 
 } // namespace ragc

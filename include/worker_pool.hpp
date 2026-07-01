@@ -7,7 +7,8 @@
 #include <thread>
 #include <vector>
 
-namespace ragc {
+namespace ragc
+{
 
 /**
  * @brief Fixed-size thread pool backed by a blocking task queue.
@@ -19,40 +20,41 @@ namespace ragc {
  *
  * Pool size should match ConnectionPool size for zero-wait DB access.
  */
-class WorkerPool {
+class WorkerPool
+{
 public:
-  /**
-   * @brief Starts N worker threads immediately.
-   * @param num_threads Number of concurrent workers.
-   */
-  explicit WorkerPool(std::size_t num_threads);
+    /**
+     * @brief Starts N worker threads immediately.
+     * @param num_threads Number of concurrent workers.
+     */
+    explicit WorkerPool(std::size_t num_threads);
 
-  /**
-   * @brief Signals shutdown, drains the queue, and joins all threads.
-   */
-  ~WorkerPool();
+    /**
+     * @brief Signals shutdown, drains the queue, and joins all threads.
+     */
+    ~WorkerPool();
 
-  // Non-copyable, non-movable — owns OS threads
-  WorkerPool(const WorkerPool &) = delete;
-  WorkerPool &operator=(const WorkerPool &) = delete;
+    // Non-copyable, non-movable — owns OS threads
+    WorkerPool(const WorkerPool &) = delete;
+    WorkerPool &operator=(const WorkerPool &) = delete;
 
-  /**
-   * @brief Enqueues a callable to be executed by the next available worker.
-   * @param task Any callable (lambda, std::function, functor).
-   */
-  void enqueue(std::function<void()> task);
+    /**
+     * @brief Enqueues a callable to be executed by the next available worker.
+     * @param task Any callable (lambda, std::function, functor).
+     */
+    void enqueue(std::function<void()> task);
 
-  /** @brief Number of tasks currently waiting in the queue. */
-  std::size_t pending() const;
+    /** @brief Number of tasks currently waiting in the queue. */
+    std::size_t pending() const;
 
 private:
-  void worker_loop();
+    void worker_loop();
 
-  std::vector<std::thread> threads_;
-  std::queue<std::function<void()>> tasks_;
-  mutable std::mutex mutex_;
-  std::condition_variable cv_;
-  bool stop_ = false;
+    std::vector<std::thread> threads_;
+    std::queue<std::function<void()>> tasks_;
+    mutable std::mutex mutex_;
+    std::condition_variable cv_;
+    bool stop_ = false;
 };
 
 } // namespace ragc
