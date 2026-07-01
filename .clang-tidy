@@ -11,6 +11,5 @@ Checks: >
 
 # Turn off specific checks that are too noisy or not applicable
 HeaderFilterRegex: '^(src|include)/.*'
-AnalyzeTemporaryDtors: false
 FormatStyle: file
 WarningsAsErrors: ''

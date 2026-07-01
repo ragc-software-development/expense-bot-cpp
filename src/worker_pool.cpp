@@ -1,4 +1,5 @@
 #include "worker_pool.hpp"
+#include <iostream>
 
 namespace ragc {
 
