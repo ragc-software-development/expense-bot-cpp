@@ -1,7 +1,8 @@
 #include "db_processor.hpp"
+
 #include <algorithm>
-#include <iterator>
 #include <iostream>
+#include <iterator>
 #include <string>
 #include <utility>
 #include <vector>

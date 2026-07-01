@@ -1,4 +1,5 @@
 #include "connection_pool.hpp"
+
 #include <stdexcept>
 
 namespace ragc {
