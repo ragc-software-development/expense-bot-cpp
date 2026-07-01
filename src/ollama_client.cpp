@@ -3,6 +3,7 @@
 #include <dpp/dpp.h>
 #include <future>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
@@ -31,9 +32,8 @@ nlohmann::json OllamaClient::parse_expense(std::string_view raw_text)
 
     // Authorization header for OpenAI-compatible endpoints.
     // For local Ollama the value is simply "Bearer ollama".
-    dpp::multimap_t headers;
+    std::multimap<std::string, std::string> headers;
     headers.emplace("Authorization", "Bearer " + api_key_);
-    headers.emplace("Content-Type", "application/json");
 
     auto promise = std::make_shared<std::promise<dpp::http_request_completion_t>>();
     std::future<dpp::http_request_completion_t> future = promise->get_future();
