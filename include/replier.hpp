@@ -1,19 +1,20 @@
 #pragma once
 
-#include "models/expense.hpp"
 #include <dpp/dpp.h>
 #include <string>
+#include "models/expense.hpp"
 
 namespace ragc {
 
 /**
  * @brief Responsible for formatting semantic data into visual Discord Rich Embeds.
  */
-class Replier {
+class Replier
+{
 public:
     /**
      * @brief Creates a beautiful "Transaction Receipt" card.
-     * 
+     *
      * @param expense The parsed and persisted expense data.
      * @return dpp::embed The formatted Discord embed.
      */

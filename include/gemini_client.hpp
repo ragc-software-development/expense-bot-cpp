@@ -1,21 +1,24 @@
 #pragma once
 
+#include <nlohmann/json.hpp>
 #include <string>
 #include <string_view>
-#include <nlohmann/json.hpp>
 
-namespace dpp { class cluster; }
+namespace dpp {
+class cluster;
+}
 
 namespace ragc {
 
 /**
  * @brief Client for interacting with the Google Gemini LLM API.
  */
-class GeminiClient {
+class GeminiClient
+{
 public:
     /**
      * @brief Construct a new Gemini Client
-     * 
+     *
      * @param bot Reference to the D++ cluster.
      * @param api_key The Gemini API key.
      */
@@ -29,7 +32,7 @@ public:
 private:
     dpp::cluster& bot_;
     std::string api_key_;
-    
+
     // Construct the JSON body for the Gemini API request
     std::string build_request_body(std::string_view user_input) const;
 };

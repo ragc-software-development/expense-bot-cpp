@@ -4,7 +4,8 @@
 
 namespace ragc {
 
-struct Expense {
+struct Expense
+{
     double amount;
     std::string currency;
     std::string category;

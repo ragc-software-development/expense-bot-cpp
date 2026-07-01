@@ -16,7 +16,8 @@ namespace ragc {
  * Each thread acquires a connection via RAII (ConnectionGuard), uses it,
  * and automatically returns it to the pool on scope exit.
  */
-class ConnectionPool {
+class ConnectionPool
+{
 public:
     /**
      * @brief Initializes the pool with N connections.
@@ -30,21 +31,24 @@ public:
      * @brief RAII guard: acquires a connection on construction,
      *        returns it to the pool on destruction.
      */
-    class ConnectionGuard {
+    class ConnectionGuard
+    {
     public:
-        ConnectionGuard(ConnectionPool &pool,
-                        std::unique_ptr<pqxx::connection> conn);
+        ConnectionGuard(ConnectionPool& pool, std::unique_ptr<pqxx::connection> conn);
         ~ConnectionGuard();
 
         // Non-copyable, movable
-        ConnectionGuard(const ConnectionGuard &) = delete;
-        ConnectionGuard &operator=(const ConnectionGuard &) = delete;
-        ConnectionGuard(ConnectionGuard &&) = default;
+        ConnectionGuard(const ConnectionGuard&) = delete;
+        ConnectionGuard& operator=(const ConnectionGuard&) = delete;
+        ConnectionGuard(ConnectionGuard&&) = default;
 
-        pqxx::connection &get() { return *conn_; }
+        pqxx::connection& get()
+        {
+            return *conn_;
+        }
 
     private:
-        ConnectionPool &pool_;
+        ConnectionPool& pool_;
         std::unique_ptr<pqxx::connection> conn_;
     };
 
