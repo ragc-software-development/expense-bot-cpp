@@ -1,5 +1,5 @@
-#include "worker_pool.hpp"
 #include <iostream>
+#include "worker_pool.hpp"
 
 namespace ragc {
 
@@ -33,7 +33,7 @@ void WorkerPool::enqueue(std::function<void()> task)
     cv_.notify_one();
 }
 
-std::size_t WorkerPool::pending() const
+auto WorkerPool::pending() const -> std::size_t
 {
     std::lock_guard<std::mutex> lock(mutex_);
     return tasks_.size();
@@ -57,9 +57,9 @@ void WorkerPool::worker_loop()
         try {
             task();
         } catch (const std::exception& e) {
-            std::cerr << "[WorkerPool] Error in background task execution: " << e.what() << std::endl;
+            std::cerr << "[WorkerPool] Error in background task execution: " << e.what() << "\n";
         } catch (...) {
-            std::cerr << "[WorkerPool] Unknown error in background task execution." << std::endl;
+            std::cerr << "[WorkerPool] Unknown error in background task execution.\n";
         }
     }
 }
