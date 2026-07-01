@@ -1,20 +1,19 @@
-#include <cstdlib>
-#include <iostream>
+#include "config.hpp"
 #include "db_processor.hpp"
 #include "gemini_client.hpp"
 #include "processor.hpp"
 #include "receiver.hpp"
 #include "worker_pool.hpp"
 
-#include "config.hpp"
-
 #include <chrono>
+#include <cstdlib>
+#include <iostream>
 #include <thread>
 
 int main()
 {
     try {
-        const auto config = Config::load();
+        const auto config = ragc::Config::load();
         constexpr std::size_t POOL_SIZE = 4;
 
         // 1. Infrastructure
