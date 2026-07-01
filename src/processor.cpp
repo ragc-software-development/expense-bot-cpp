@@ -1,4 +1,5 @@
 #include "processor.hpp"
+
 #include <iostream>
 
 namespace ragc {
