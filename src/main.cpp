@@ -6,27 +6,7 @@
 #include "receiver.hpp"
 #include "worker_pool.hpp"
 
-struct Config
-{
-    std::string token;
-    std::string db_url;
-    std::string gemini_key;
-    std::optional<std::string> guild_id;
-
-    static Config load()
-    {
-        const char* token = std::getenv("DISCORD_BOT_TOKEN");
-        const char* db_url = std::getenv("DATABASE_URL");
-        const char* gemini_key = std::getenv("GEMINI_API_KEY");
-        const char* guild_id = std::getenv("DISCORD_GUILD_ID");
-
-        if (!token || !db_url || !gemini_key) {
-            throw std::runtime_error("Missing critical environment variables (TOKEN, DB_URL, or GEMINI_KEY)");
-        }
-
-        return {token, db_url, gemini_key, guild_id ? std::make_optional(guild_id) : std::nullopt};
-    }
-};
+#include "config.hpp"
 
 #include <chrono>
 #include <thread>

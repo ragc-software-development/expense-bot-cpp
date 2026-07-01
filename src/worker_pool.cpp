@@ -53,7 +53,13 @@ void WorkerPool::worker_loop()
             task = std::move(tasks_.front());
             tasks_.pop();
         }
-        task();
+        try {
+            task();
+        } catch (const std::exception& e) {
+            std::cerr << "[WorkerPool] Error in background task execution: " << e.what() << std::endl;
+        } catch (...) {
+            std::cerr << "[WorkerPool] Unknown error in background task execution." << std::endl;
+        }
     }
 }
 
